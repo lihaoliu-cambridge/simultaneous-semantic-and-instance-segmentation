@@ -12,9 +12,10 @@ In this repository, we provide Pytorch implementation for the 4th solution in th
 
 ## Requirement
 
-pytorch.             1.10.1  
-cuda                 11.0
-cudnn                8.0
+pytorch              1.10.1  
+cuda                 11.0  
+cudnn                8.0  
+
 
 To install detectron2, you need to install the it from my repo, since I make changes to the orginl detectron2:
    ```shell
