@@ -1,0 +1,48 @@
+_BASE_: "../Base-RCNN-FPN.yaml"
+MODEL:
+  MASK_ON: True
+  WEIGHTS: "catalog://ImageNetPretrained/FAIR/X-152-32x8d-IN5k"
+  RESNETS:
+    STRIDE_IN_1X1: False  # this is a C2 model
+    NUM_GROUPS: 32
+    WIDTH_PER_GROUP: 8
+    DEPTH: 152
+    DEFORM_ON_PER_STAGE: [False, True, True, True]
+  ANCHOR_GENERATOR:
+    SIZES: [[8], [16], [32], [64], [128]]
+  ROI_HEADS:
+    NAME: "CascadeROIHeads"
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_CONV: 4
+    NUM_FC: 1
+    NORM: "GN"
+    CLS_AGNOSTIC_BBOX_REG: True
+  ROI_MASK_HEAD:
+    NUM_CONV: 8
+    NORM: "GN"
+  RPN:
+    POST_NMS_TOPK_TRAIN: 2000
+DATASETS:
+  TRAIN: ("coco_2017_train", "coco_2017_val")
+  TEST: ("coco_2017_test",)
+SOLVER:
+  IMS_PER_BATCH: 96
+  STEPS: (2400, 2800)   # (1800, 2200)
+  MAX_ITER: 3200        # 2600
+  BASE_LR: 0.04
+  WARMUP_ITERS: 200
+  WARMUP_FACTOR: 0.01
+  CHECKPOINT_PERIOD: 200
+INPUT:
+  MIN_SIZE_TRAIN: (512,) # (640, 864)
+  MIN_SIZE_TRAIN_SAMPLING: "choice" # "range"
+  MAX_SIZE_TRAIN: 512 # 1440
+  MIN_SIZE_TEST: 512
+  MAX_SIZE_TEST: 512
+  CROP:
+    ENABLED: True
+TEST:
+  EVAL_PERIOD: 0
+OUTPUT_DIR:
+  "./output/fold_0/cascade_mask_rcnn_X_152_32x8d_FPN_IN5k_gn_dconv_anchor8_lr0.04_iou_dataaug"
